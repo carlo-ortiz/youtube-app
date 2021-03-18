@@ -1,51 +1,32 @@
-import React from 'react';
-import youtube from '../apis/youtube';
+import React, { useState, useEffect } from 'react';
 
 import SearchBar from './SearchBar';
 import VideoList from './VideoList';
 import VideoDetail from './VideoDetail';
+import useVideos from '../hooks/useVideos';
 
-class App extends React.Component {
-  state = { videos: [], selectedVideo: null };
+const App = () => {
+  const [videos, search] = useVideos('buildings');
 
-  componentDidMount() {
-    this.onTermSubmit('buildings');
-  }
+  const [selectedVideo, setselectedVideo] = useState(null);
 
-  onTermSubmit = async (searchTerm) => {
-    const { data } = await youtube.get('/search', {
-      params: {
-        q: searchTerm,
-      },
-    });
+  useEffect(() => setselectedVideo(videos[0]), [videos]);
 
-    this.setState({ videos: data.items, selectedVideo: data.items[0] });
-  };
-
-  onVideoSelect = (selectedVideo) => {
-    this.setState({ selectedVideo });
-  };
-
-  render() {
-    return (
-      <div className="ui container">
-        <SearchBar onFormSubmit={this.onTermSubmit} />
-        <div className="ui grid">
-          <div className="ui row">
-            <div className="eleven wide column">
-              <VideoDetail selectedVideo={this.state.selectedVideo} />
-            </div>
-            <div className="five wide column">
-              <VideoList
-                onVideoSelect={this.onVideoSelect}
-                videos={this.state.videos}
-              />
-            </div>
+  return (
+    <div className="ui container">
+      <SearchBar onFormSubmit={search} />
+      <div className="ui grid">
+        <div className="ui row">
+          <div className="eleven wide column">
+            <VideoDetail selectedVideo={selectedVideo} />
+          </div>
+          <div className="five wide column">
+            <VideoList onVideoSelect={setselectedVideo} videos={videos} />
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;

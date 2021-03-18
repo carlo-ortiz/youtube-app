@@ -5,7 +5,7 @@ const VideoDetail = ({ selectedVideo }) => {
     return <div>Loading...</div>;
   }
 
-  const videoSrc = `http://youtube.com/embed/${selectedVideo.id.videoId}`;
+  const videoSrc = `https://youtube.com/embed/${selectedVideo.id.videoId}`;
 
   return (
     <div>
